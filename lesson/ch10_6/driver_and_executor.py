@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
+import time
 
 spark = SparkSession \
         .builder \
@@ -31,5 +32,4 @@ postings_df.persist()
 postings_df.show()
 postings_df.rdd.getNumPartitions()
 
-postings_full_time_df = postings_df.filter(col('formatted_work_type')=='Full-time')
-postings_full_time_df.count()
+time.sleep(300)
