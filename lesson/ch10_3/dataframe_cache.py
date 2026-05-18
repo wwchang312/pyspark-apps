@@ -30,18 +30,19 @@ emp_df = spark\
         .schema(emp_schema) \
         .csv(emp_path)
 
-emp_df=emp_df.dropDuplicates(['company_id'])
-
 comp_df.persist()
 emp_df.persist()
 
 print(f'company_cnt:{comp_df.count()}')
 print(f'employees_cnt:{emp_df.count()}')
 
+emp_dup_df=emp_df.dropDuplicates(['company_id'])
+
+
 comp_it_df = comp_df.filter(col('industry')=='IT Services and IT Consulting')
 
 comp_it_emp_df = (comp_it_df.join(
-                    other= emp_df,
+                    other= emp_dup_df,
                     on = 'company_id',
                     how = 'inner'
                 ).select('company_id','employee_count').sort('employee_count',ascending=False))
