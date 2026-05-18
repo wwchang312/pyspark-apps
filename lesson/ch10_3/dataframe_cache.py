@@ -30,7 +30,7 @@ emp_df = spark\
         .schema(emp_schema) \
         .csv(emp_path)
 
-emp_df.dropDuplicates(['company_id'])
+emp_df=emp_df.dropDuplicates(['company_id'])
 
 comp_df.persist()
 emp_df.persist()
