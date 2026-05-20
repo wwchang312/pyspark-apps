@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, broadcast
+from pyspark.sql.functions import col, broadcast,count
 import time
 
 spark = SparkSession \
@@ -8,7 +8,7 @@ spark = SparkSession \
         .config('spark.executor.memory','2g') \
         .config('spark.executor.cores', '2') \
         .config('spark.executor.instances','3') \
-        .config('spark.sql.adaptive.enabled',False)\
+        .config('spark.sql.adaptive.enabled','false')\
         .getOrCreate()
 
 job_path = 'hdfs:///home/spark/sample/linkedin_jobs/jobs/job_skills.csv'
@@ -38,16 +38,13 @@ skill_df.count()
 
 join_df=job_df.join(
     other=broadcast(skill_df),
-    on=['skill_abr'],
+    on='skill_abr',
     how='inner'
-)
+).select('job_id','skill_name') \
+    .groupBy('skill_name') \
+    .agg(count('job_id').alias('job_count')) \
+    .sort('job_count',ascending=False)
 
-join_df.persist()
-join_df.count()
-
-join_group_df = join_df.groupBy('skill_name').count().alias('job_count')
-join_group_df.persist()
-
-join_group_df.sort('job_count',ascending=False).show()
+print(join_df.count())
 
 time.sleep(1200)
