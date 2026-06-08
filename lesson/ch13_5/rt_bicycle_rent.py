@@ -34,7 +34,7 @@ class RtBicycleRent(BaseStreamApp):
                 stt_lgtd        STRING,
                 crt_dttm        TIMESTAMP
             )
-            LOCATION 's3a://datalake-spark-sink/lesson/bicycle_rent_info'
+            LOCATION 's3a://datalake-spark-sink-wwchang/lesson/bicycle_rent_info'
             PARTITIONED BY (ymd STRING, hh STRING)
             STORED AS PARQUET
               '''
